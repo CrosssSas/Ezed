@@ -16,15 +16,17 @@ namespace Ezed
         private string path;
 
         int index;
-        string[] titles;
+        string[] titles; //промежуточный массив временного хранения данных
 
+        bool dbEmpty;
 
         public DataPro(string Path)
         {
             this.path = Path;
             this.index = 0;
             this.titles = new string[6];
-            this.workers = new WorkerS[2];
+            this.workers = new WorkerS[1];
+            this.dbEmpty = false;
         }
 
         private void Resize1(bool Flag)
@@ -41,23 +43,34 @@ namespace Ezed
             this.workers[index] = ConWor;
             this.index++;
         }
-        
-        public void Load()
+
+        public void Load() //Загружает даннные во временную память
         {
-            using (StreamReader sr = new StreamReader(this.path))
+            int count = CheckFile(this.path);
+            if (count > 0)
             {
-                titles = sr.ReadLine().Split('_');
-
-                while (!sr.EndOfStream)
+                using (StreamReader sr = new StreamReader(this.path))
                 {
-                    string[] wor = sr.ReadLine().Split('_');
+                    titles = sr.ReadLine().Split('_');
 
-                    Add(new WorkerS(int.Parse(wor[0]), DateTime.ParseExact(wor[1], "dd.MM.yyyy HH:mm:ss", null), wor[2], byte.Parse(wor[3]), byte.Parse(wor[4]), wor[5], wor[6]));
+                    while (!sr.EndOfStream)
+                    {
+                        string[] wor = sr.ReadLine().Split('_');
+
+                        Add(new WorkerS(int.Parse(wor[0]), DateTime.ParseExact(wor[1], "dd.MM.yyyy HH:mm:ss", null), wor[2], byte.Parse(wor[3]), byte.Parse(wor[4]), wor[5], wor[6]));
+                    }
                 }
+                PrintDataToConsole();
+                dbEmpty = false;
+            }
+            else
+            {
+                WriteLine("База данных пуста");
+                dbEmpty = true;
             }
         }
 
-        public void PrintDataToConsole()
+        public void PrintDataToConsole() // Выводит данные на экран
         {
             var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
             for (int i = 0; i < index; i++)
@@ -70,7 +83,7 @@ namespace Ezed
 
         public int Count { get { return this.index; } }
 
-        public void AddUserToDB(string FIO, byte Age, byte Height, string BrithData, string BirthPlace)
+        public void AddUserToDB(string FIO, byte Age, byte Height, string BrithData, string BirthPlace) // Добавляет пользователя в структуру
         {
             DateTime DTN = DateTime.Now;
             int NumWor = index;
@@ -78,21 +91,33 @@ namespace Ezed
             SaveDataToDisk();
         }
         
-        public void SaveDataToDisk()
+        public void SaveDataToDisk() // Сохраняет данные в файл
         {
             File.WriteAllText(path, String.Empty);
             using (StreamWriter start = new StreamWriter(path))
             {
-                for (int i = 0; i < titles.Length; i++)
+                if (dbEmpty == false)
                 {
-                    start.Write(titles[i]);
-                    Write("_");
+                    for (int i = 0; i < titles.Length; i++)
+                    {
+                        start.Write(titles[i]);
+                        start.Write("_");
+                    }
                 }
+
                 foreach (WorkerS wor in workers)
                 {
                     start.WriteLine(wor.Print());
                 }
             }
+        }
+
+        public int CheckFile(string way)
+        {
+            string[] strok = File.ReadAllLines(way);
+            int CheckCount = strok.Length;
+            
+            return CheckCount;
         }
     }
 }

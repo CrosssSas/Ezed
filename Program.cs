@@ -1,6 +1,4 @@
-﻿using System;
-using static System.Console;
-using System.IO;
+﻿using static System.Console;
 
 namespace Ezed
 {
@@ -12,8 +10,8 @@ namespace Ezed
 
             DataPro data = new DataPro(path);
             data.Load();
-            data.PrintDataToConsole();
 
+            WriteLine();
             WriteLine("Какое действие нужно выполнить?");
             WriteLine("(Добавить запись - 1, ...)");
             sbyte chose = sbyte.Parse(ReadLine());
@@ -39,6 +37,7 @@ namespace Ezed
 
 
             ReadKey();
+        
         }
     }
 }
