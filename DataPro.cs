@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using static System.Console;
 using ConsoleTables;
+using System.Globalization;
 
 namespace Ezed
 {
@@ -51,13 +52,13 @@ namespace Ezed
             {
                 using (StreamReader sr = new StreamReader(this.path))
                 {
-                    titles = sr.ReadLine().Split('_');
+                    titles = sr.ReadLine().Split('_'); 
 
                     while (!sr.EndOfStream)
                     {
                         string[] wor = sr.ReadLine().Split('_');
 
-                        Add(new WorkerS(int.Parse(wor[0]), DateTime.ParseExact(wor[1], "dd.MM.yyyy HH:mm:ss", null), wor[2], byte.Parse(wor[3]), byte.Parse(wor[4]), wor[5], wor[6]));
+                        Add(new WorkerS(int.Parse(wor[0]), DateTime.ParseExact(wor[1], "M/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture("en-US")), wor[2], byte.Parse(wor[3]), byte.Parse(wor[4]), wor[5], wor[6]));
                     }
                 }
                 PrintDataToConsole();
@@ -103,11 +104,12 @@ namespace Ezed
                         start.Write(titles[i]);
                         start.Write("_");
                     }
+                    start.WriteLine();
                 }
 
-                foreach (WorkerS wor in workers)
+                for (int i = 0; i < index; i++)
                 {
-                    start.WriteLine(wor.Print());
+                    start.WriteLine(workers[i].Print());
                 }
             }
         }
@@ -116,6 +118,10 @@ namespace Ezed
         {
             string[] strok = File.ReadAllLines(way);
             int CheckCount = strok.Length;
+            if (CheckCount == 1 && String.IsNullOrEmpty(strok[0]))
+            {
+                CheckCount = 0;
+            }
             
             return CheckCount;
         }

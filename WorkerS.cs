@@ -39,7 +39,7 @@ namespace Ezed
 
         public string Print()
         {
-            return $"{ID}_{DTN}_{FIO}_{Age}_{Height}_{BirthDate}_{BirthPlace}";
+            return $"{ID}_{DTN.ToString(System.Globalization.CultureInfo.CreateSpecificCulture("en-US"))}_{FIO}_{Age}_{Height}_{BirthDate}_{BirthPlace}";
         }
     }
 }
