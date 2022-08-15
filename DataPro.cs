@@ -14,6 +14,8 @@ namespace Ezed
     {
         private WorkerS[] workers;
 
+        private WorkerS[] workersCopy;
+
         private string path;
 
         int index;
@@ -27,6 +29,7 @@ namespace Ezed
             this.index = 0;
             this.titles = new string[6];
             this.workers = new WorkerS[1];
+            this.workersCopy = new WorkerS[1];
             this.dbEmpty = false;
         }
 
@@ -35,6 +38,7 @@ namespace Ezed
             if (Flag)
             {
                 Array.Resize(ref this.workers, this.workers.Length * 2);
+                Array.Resize(ref this.workersCopy, this.workersCopy.Length * 2);
             }
         }
 
@@ -125,5 +129,30 @@ namespace Ezed
             
             return CheckCount;
         }
+
+        public void WorkDeler(int deleteNumber)  //Удаляет выбраную запись
+        {
+            index = index - 1;
+            
+            for (int i = 0; i < index; i++)
+            {
+                if (workers[i].ID == deleteNumber)
+                {
+                    i--;
+                    continue;
+                }
+                workersCopy[i] = workers[i];
+            }
+            
+            Array.Clear(workers, 0, workers.Length);
+
+            for (int i = 0; i < index; i++)
+            {
+                workers[i] = workersCopy[i];
+            }
+        }       
+			
+
+			
     }
 }
