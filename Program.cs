@@ -39,15 +39,20 @@ namespace Ezed
 
                 }
             }
-            if (chose == 2)
+            else if(chose == 2)
             {
-                    WriteLine("Введите номер работника, которого хотите удалить из базы:");
-                    int DelNum = int.Parse(ReadLine());
+                WriteLine("Введите номер работника, которого хотите удалить из базы:");
+                int DelNum = int.Parse(ReadLine());
 
-                    data.WorkDeler(DelNum);
-                    data.SaveDataToDisk();
-                    WriteLine("Запись успешно удалена!");
-                    data.Load();
+                data.WorkDeler(DelNum);
+                data.SaveDataToDisk();
+                WriteLine("Запись успешно удалена!");
+                data.index = 0;
+                data.Load();
+
+            }
+            else if(chose == 3)
+            {
 
             }
 

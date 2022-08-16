@@ -18,10 +18,12 @@ namespace Ezed
 
         private string path;
 
-        int index;
+        public int index;
         string[] titles; //промежуточный массив временного хранения данных
 
         bool dbEmpty;
+
+        bool WorkDelerFind;
 
         public DataPro(string Path)
         {
@@ -31,6 +33,7 @@ namespace Ezed
             this.workers = new WorkerS[1];
             this.workersCopy = new WorkerS[1];
             this.dbEmpty = false;
+            this.WorkDelerFind = false;
         }
 
         private void Resize1(bool Flag)
@@ -136,14 +139,28 @@ namespace Ezed
             
             for (int i = 0; i < index; i++)
             {
-                if (workers[i].ID == deleteNumber)
+                if(WorkDelerFind == false)
                 {
-                    i--;
-                    continue;
+                    if (workers[i].ID == deleteNumber)
+                    {
+                        i--;
+                        WorkDelerFind = true;
+                        continue;
+                    }
                 }
-                workersCopy[i] = workers[i];
+                
+                if(WorkDelerFind)
+                {
+                    workersCopy[i] = workers[i+1];
+                }
+                else
+                {
+                    workersCopy[i] = workers[i];
+                }
             }
-            
+
+            WorkDelerFind = false;
+
             Array.Clear(workers, 0, workers.Length);
 
             for (int i = 0; i < index; i++)
