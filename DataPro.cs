@@ -12,9 +12,9 @@ namespace Ezed
 {
     struct DataPro
     {
-        private WorkerS[] workers;
+        public WorkerS[] workers;
 
-        private WorkerS[] workersCopy;
+        public WorkerS[] workersCopy;
 
         private string path;
 
@@ -22,6 +22,8 @@ namespace Ezed
         string[] titles; //промежуточный массив временного хранения данных
 
         bool dbEmpty;
+
+        int MaxValue;
 
         bool WorkDelerFind;
 
@@ -34,14 +36,15 @@ namespace Ezed
             this.workersCopy = new WorkerS[1];
             this.dbEmpty = false;
             this.WorkDelerFind = false;
+            this.MaxValue = 0;
         }
 
         private void Resize1(bool Flag)
         {
             if (Flag)
             {
-                Array.Resize(ref this.workers, this.workers.Length * 2);
-                Array.Resize(ref this.workersCopy, this.workersCopy.Length * 2);
+                Array.Resize(ref this.workers, this.workers.Length + 1);
+                Array.Resize(ref this.workersCopy, this.workersCopy.Length + 1);
             }
         }
 
@@ -94,9 +97,14 @@ namespace Ezed
         public void AddUserToDB(string FIO, byte Age, byte Height, string BrithData, string BirthPlace) // Добавляет пользователя в структуру
         {
             DateTime DTN = DateTime.Now;
-            int NumWor = index;
+            for (int i = 0; i < index; i++)
+            {
+                MaxValue = Math.Max(workers[i].ID, MaxValue);
+            }
+            int NumWor = MaxValue + 1;
             Add(new WorkerS(NumWor, DTN, FIO, Age, Height, BrithData, BirthPlace));
             SaveDataToDisk();
+            MaxValue = 0;
         }
         
         public void SaveDataToDisk() // Сохраняет данные в файл
@@ -169,7 +177,40 @@ namespace Ezed
             }
         }       
 			
-
+        public void Edit(int ID, int Field)   // Изменяет выбраное поле в записи
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if (workers[i].ID == ID)
+                {
+                    if(Field == 1)
+                    {
+                        WriteLine("Введите ФИО:");
+                        workers[i].FIO = ReadLine();
+                    }
+                    else if(Field == 2)
+                    {
+                        WriteLine("Введите Возраст:");
+                        workers[i].Age = byte.Parse(ReadLine());
+                    }
+                    else if(Field == 3)
+                    {
+                        WriteLine("Введите Рост:");
+                        workers[i].Height = byte.Parse(ReadLine());
+                    }
+                    else if(Field == 4)
+                    {
+                        WriteLine("Введите Дату рождения:");
+                        workers[i].BirthDate = ReadLine();
+                    }
+                    else if(Field == 5)
+                    {
+                        WriteLine("Введите Место рождения:");
+                        workers[i].BirthPlace = ReadLine();
+                    }
+                }
+            }
+        }
 			
     }
 }
