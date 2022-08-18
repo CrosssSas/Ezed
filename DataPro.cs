@@ -27,6 +27,9 @@ namespace Ezed
 
         bool WorkDelerFind;
 
+        int index2;
+        bool index3;
+
         public DataPro(string Path)
         {
             this.path = Path;
@@ -37,6 +40,8 @@ namespace Ezed
             this.dbEmpty = false;
             this.WorkDelerFind = false;
             this.MaxValue = 0;
+            this.index2 = 0;
+            this.index3 = false;
         }
 
         private void Resize1(bool Flag)
@@ -211,6 +216,102 @@ namespace Ezed
                 }
             }
         }
-			
-    }
+
+        public void RangePrinter(int FirstB, int LastB)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if ((workers[i].ID >= FirstB) && (workers[i].ID <= LastB))
+                {
+                    workersCopy[index2] = workers[i];
+                    index2++;
+                }
+            }
+            
+        }
+
+        public void PrintDataToConsoleRange() // Выводит данные в диапазоне на экран
+        {
+            var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
+            for (int i = 0; i < index2; i++)
+            {
+                table.AddRow(this.workersCopy[i].Print().Split('_'));
+            }
+            table.Write(Format.Alternative);
+
+            index2 = 0;
+        }
+
+        public void RangePrinter(byte FirstB, byte LastB)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if ((workers[i].Age >= FirstB) && (workers[i].Age <= LastB))
+                {
+                    workersCopy[index2] = workers[i];
+                    index2++;
+                }
+            }
+        }
+
+        public void RangePrinter2(byte FirstB, byte LastB)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if ((workers[i].Height >= FirstB) && (workers[i].Height <= LastB))
+                {
+                    workersCopy[index2] = workers[i];
+                    index2++;
+                }
+            }
+        }
+
+        public void RangePrinter(sbyte Dat, sbyte Mount, short Year, sbyte Dat1, sbyte Mount1, short Year1)
+        {
+            string dataFstr = $"{Mount}/{Dat}/{Year} 12:00:00 AM";
+
+            string dataLstr = $"{Mount1}/{Dat1}/{Year1} 11:59:59 PM";
+
+            DateTime date1 = DateTime.Parse(dataFstr, CultureInfo.CreateSpecificCulture("en-US"));
+
+            DateTime date2 = DateTime.Parse(dataLstr, CultureInfo.CreateSpecificCulture("en-US"));
+
+            for (int i = 0; i < index; i++)
+            {
+                if ((workers[i].DTN >= date1) && (workers[i].DTN <= date2))
+                {
+                    workersCopy[index2] = workers[i];
+                    index2++;
+                }
+            }
+        }
+        
+        public void IdChecker(int id)
+        {
+            for (int i = 0; i < index; i++)
+            {
+                if (workers[i].ID == id)
+                {
+                    workersCopy[0] = workers[i];
+                    
+                    var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
+                    table.AddRow(this.workersCopy[0].Print().Split('_'));
+                    table.Write(Format.Alternative);
+                    index3 = true;
+                    break;
+
+                }
+            }
+
+            if (index3 == false)
+            {
+                Console.WriteLine($"ID номер {id} не существует");
+            }
+            else
+            {
+                index3 = false;
+            }
+        }
+    
+    }   
 }

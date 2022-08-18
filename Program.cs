@@ -1,5 +1,7 @@
 ﻿using static System.Console;
 using System.Linq;
+using System;
+using System.Globalization;
 
 namespace Ezed
 {
@@ -16,7 +18,7 @@ namespace Ezed
 
             WriteLine();
             WriteLine("Какое действие нужно выполнить?");
-            WriteLine("(Добавить запись - 1, Удалить запись - 2, Редактировать запись - 3, Сортировать записи - 4)");
+            WriteLine("(Добавить запись - 1, Удалить запись - 2, Редактировать запись - 3, Сортировать записи - 4, Найти запись по ID - 5)");
             sbyte chose = sbyte.Parse(ReadLine());
 
             if (chose == 1)
@@ -158,11 +160,76 @@ namespace Ezed
                 }
                 else if(chose2 == 2)
                 {
+                    WriteLine("Введите номер поля, по которому нужно вывести диапазон:");
+                    WriteLine("1-ID/2-Дата создания/3-Age/4-Height/");
+                    sbyte chose5 = sbyte.Parse(ReadLine());
+                    
+                    if (chose5 == 1)
+                    {
+                        WriteLine("Введите нижнюю границу диапазона");
+                        int firstBorder = int.Parse(ReadLine());
+                        WriteLine("Введите верхнюю границу диапазона");
+                        int lastBorder = int.Parse(ReadLine());
 
+                        data.workers = data.workers.OrderBy(w => w.ID).ToArray();
+                        data.RangePrinter(firstBorder, lastBorder);
+                        data.PrintDataToConsoleRange();
+                    }
+                    else if (chose5 == 2)
+                    {
+                        WriteLine("Введите нижнюю границу диапазона");
+                        WriteLine("Введите число");
+                        sbyte dAtA = sbyte.Parse(ReadLine());
+                        WriteLine("Введите месяц");
+                        sbyte MoUnTh = sbyte.Parse(ReadLine());
+                        WriteLine("Введите год");
+                        short YeAr = short.Parse(ReadLine());
+
+                        WriteLine("Введите верхнюю границу диапазона");
+                        WriteLine("Введите число");
+                        sbyte dAtA1 = sbyte.Parse(ReadLine());
+                        WriteLine("Введите месяц");
+                        sbyte MoUnTh1 = sbyte.Parse(ReadLine());
+                        WriteLine("Введите год");
+                        short YeAr1 = short.Parse(ReadLine());
+
+                        data.workers = data.workers.OrderBy(w => w.DTN).ToArray();
+                        data.RangePrinter(dAtA, MoUnTh, YeAr, dAtA1, MoUnTh1, YeAr1);
+                        data.PrintDataToConsoleRange();
+                    }
+                    else if (chose5 == 3)
+                    {
+                        WriteLine("Введите нижнюю границу диапазона");
+                        byte firstBorder3 = byte.Parse(ReadLine());
+                        WriteLine("Введите верхнюю границу диапазона");
+                        byte lastBorder3 = byte.Parse(ReadLine());
+
+                        data.workers = data.workers.OrderBy(w => w.Age).ToArray();
+                        data.RangePrinter(firstBorder3, lastBorder3);
+                        data.PrintDataToConsoleRange();
+                    }
+                    else if (chose5 == 4)
+                    {
+                        WriteLine("Введите нижнюю границу диапазона");
+                        byte firstBorder4 = byte.Parse(ReadLine());
+                        WriteLine("Введите верхнюю границу диапазона");
+                        byte lastBorder4 = byte.Parse(ReadLine());
+
+                        data.workers = data.workers.OrderBy(w => w.Height).ToArray();
+                        data.RangePrinter2(firstBorder4, lastBorder4);
+                        data.PrintDataToConsoleRange();
+                    }
                 }
 
             }
+            else if (chose == 5)
+            {
+                WriteLine("Введите ID:");
+                int iD = int.Parse(ReadLine());
 
+                data.IdChecker(iD);
+            }
+            
             ReadKey();
 
             
