@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using static System.Console;
 using ConsoleTables;
@@ -12,32 +8,27 @@ namespace Ezed
 {
     struct DataPro
     {
-        public WorkerS[] workers;
+        public WorkerS[] workers; //массив временного хранения записей
 
-        public WorkerS[] workersCopy;
+        public WorkerS[] workersCopy; //Полностью идентичный массив для копирования записей
 
         private string path;
 
-        public int index;
-        string[] titles; //промежуточный массив временного хранения данных
+        public int index; //счётчик работников в базе на данный момент
+        string[] titles; //массив временного хранения заголовков
 
-        bool dbEmpty;
-
-        int MaxValue;
-
-        bool WorkDelerFind;
-
-        int index2;
+        int MaxValue; //Хранит наибольший номер - ID
+        bool WorkDelerFind; //Переменная для метода WorkDeler
+        int index2; //Переменная для метода RangePrinter
         bool index3;
 
-        public DataPro(string Path)
+        public DataPro(string Path) //Инициализация
         {
             this.path = Path;
             this.index = 0;
             this.titles = new string[6];
             this.workers = new WorkerS[1];
             this.workersCopy = new WorkerS[1];
-            this.dbEmpty = false;
             this.WorkDelerFind = false;
             this.MaxValue = 0;
             this.index2 = 0;
@@ -76,18 +67,14 @@ namespace Ezed
                         Add(new WorkerS(int.Parse(wor[0]), DateTime.ParseExact(wor[1], "M/dd/yyyy h:mm:ss tt", CultureInfo.CreateSpecificCulture("en-US")), wor[2], byte.Parse(wor[3]), byte.Parse(wor[4]), wor[5], wor[6]));
                     }
                 }
-                PrintDataToConsole();
-                dbEmpty = false;
             }
             else if(count == 0)
             {
             
                 using (StreamWriter SW = new StreamWriter(path))
                 {
-                    SW.WriteLine("ID_Дата создания_ФИО_Возраст_Рост_Дата рождения_Место рождения");
+                    SW.Write("ID_Дата создания_ФИО_Возраст_Рост_Дата рождения_Место рождения");
                 }
-                
-                dbEmpty = true;
 
                 using (StreamReader sr = new StreamReader(this.path))
                 {
@@ -95,6 +82,7 @@ namespace Ezed
                     var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
                     table.Write(Format.Alternative);
                 }
+
 
                 WriteLine("База данных пуста");
             }
@@ -130,24 +118,24 @@ namespace Ezed
             File.WriteAllText(path, String.Empty);
             using (StreamWriter start = new StreamWriter(path))
             {
-                if (dbEmpty == false)
+                for (int i = 0; i < titles.Length; i++) //Запись заголовков
                 {
-                    for (int i = 0; i < titles.Length; i++)
-                    {
-                        start.Write(titles[i]);
-                        start.Write("_");
-                    }
-                    start.WriteLine();
+                   start.Write(titles[i]);
+                   if (i < 6)
+                   {
+                       start.Write("_");
+                   }
                 }
+                start.WriteLine();   
 
-                for (int i = 0; i < index; i++)
+                for (int i = 0; i < index; i++) //Добавление записей
                 {
                     start.WriteLine(workers[i].Print());
                 }
             }
         }
 
-        public int CheckFile(string way)
+        public int CheckFile(string way) //Считает колиство строк в файле
         {
             string[] strok = File.ReadAllLines(way);
             int CheckCount = strok.Length;
@@ -193,6 +181,9 @@ namespace Ezed
             {
                 workers[i] = workersCopy[i];
             }
+
+            Array.Resize(ref this.workers, this.workers.Length - 1);
+            Array.Resize(ref this.workersCopy, this.workersCopy.Length - 1);
         }       
 			
         public void Edit(int ID, int Field)   // Изменяет выбраное поле в записи
@@ -230,7 +221,7 @@ namespace Ezed
             }
         }
 
-        public void RangePrinter(int FirstB, int LastB)
+        public void RangePrinter(int FirstB, int LastB)  //Сохраняет данные в выбранном диапазоне в выбраную память для ID
         {
             for (int i = 0; i < index; i++)
             {
@@ -243,7 +234,7 @@ namespace Ezed
             
         }
 
-        public void PrintDataToConsoleRange() // Выводит данные в диапазоне на экран
+        public void PrintDataToConsoleRange() //Выводит данные в диапазоне на экран
         {
             var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
             for (int i = 0; i < index2; i++)
@@ -255,7 +246,7 @@ namespace Ezed
             index2 = 0;
         }
 
-        public void RangePrinter(byte FirstB, byte LastB)
+        public void RangePrinter(byte FirstB, byte LastB) //Сохраняет данные в выбранном диапазоне в выбраную память для возраста
         {
             for (int i = 0; i < index; i++)
             {
@@ -267,7 +258,7 @@ namespace Ezed
             }
         }
 
-        public void RangePrinter2(byte FirstB, byte LastB)
+        public void RangePrinter2(byte FirstB, byte LastB) //Сохраняет данные в выбранном диапазоне в выбраную память для роста
         {
             for (int i = 0; i < index; i++)
             {
@@ -279,7 +270,7 @@ namespace Ezed
             }
         }
 
-        public void RangePrinter(sbyte Dat, sbyte Mount, short Year, sbyte Dat1, sbyte Mount1, short Year1)
+        public void RangePrinter(sbyte Dat, sbyte Mount, short Year, sbyte Dat1, sbyte Mount1, short Year1) //Сохраняет данные в выбранном диапазоне в выбраную память для даты создания
         {
             string dataFstr = $"{Mount}/{Dat}/{Year} 12:00:00 AM";
 
@@ -299,7 +290,7 @@ namespace Ezed
             }
         }
         
-        public void IdChecker(int id)
+        public void IdChecker(int id)  //Находит и выводит запись по ID
         {
             for (int i = 0; i < index; i++)
             {
@@ -318,13 +309,12 @@ namespace Ezed
 
             if (index3 == false)
             {
-                Console.WriteLine($"ID номер {id} не существует");
+                WriteLine($"ID номер {id} не существует");
             }
             else
             {
                 index3 = false;
             }
         }
-    
     }   
 }
