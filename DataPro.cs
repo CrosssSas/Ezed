@@ -79,10 +79,24 @@ namespace Ezed
                 PrintDataToConsole();
                 dbEmpty = false;
             }
-            else
+            else if(count == 0)
             {
-                WriteLine("База данных пуста");
+            
+                using (StreamWriter SW = new StreamWriter(path))
+                {
+                    SW.WriteLine("ID_Дата создания_ФИО_Возраст_Рост_Дата рождения_Место рождения");
+                }
+                
                 dbEmpty = true;
+
+                using (StreamReader sr = new StreamReader(this.path))
+                {
+                    titles = sr.ReadLine().Split('_');
+                    var table = new ConsoleTable($"{this.titles[0]}", $"{this.titles[1]}", $"{this.titles[2]}", $"{this.titles[3]}", $"{this.titles[4]}", $"{this.titles[5]}", $"{this.titles[6]}");
+                    table.Write(Format.Alternative);
+                }
+
+                WriteLine("База данных пуста");
             }
         }
 
@@ -92,7 +106,6 @@ namespace Ezed
             for (int i = 0; i < index; i++)
             {
                 table.AddRow(this.workers[i].Print().Split('_'));
-                
             }
             table.Write(Format.Alternative);
         }

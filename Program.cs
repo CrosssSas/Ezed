@@ -2,6 +2,8 @@
 using System.Linq;
 using System;
 using System.Globalization;
+using System.IO;
+using System.Threading;
 
 namespace Ezed
 {
@@ -10,6 +12,17 @@ namespace Ezed
         static void Main(string[] args)
         {
             string path = @"db.txt";
+
+            if (File.Exists(path) == false)
+            {
+                var myFile = File.Create(path);
+                myFile.Close();
+
+                using (StreamWriter SW = new StreamWriter(path))
+                {
+                    SW.WriteLine("ID_Дата создания_ФИО_Возраст_Рост_Дата рождения_Место рождения");
+                }
+            }
 
             string addCount = "y";
 
